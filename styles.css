@@ -209,11 +209,18 @@ body {
 	padding: 20px 24px;
 	flex-direction: column;
 	gap: 16px;
-	box-shadow: var(--shadow)
+	box-shadow: var(--shadow);
+	backdrop-filter: saturate(180%) blur(10px);
+	z-index: 40;
+	transform: translateY(-10px);
+	opacity: 0;
+	transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 .mobile-menu.open {
-	display: flex
+	display: flex;
+	transform: translateY(0);
+	opacity: 1;
 }
 
 .mobile-menu a {
@@ -221,14 +228,81 @@ body {
 	text-decoration: none;
 	font-weight: 500;
 	padding: 12px 0;
-	border-bottom: 1px solid var(--border)
+	border-bottom: 1px solid var(--border);
+	transition: color 0.2s ease;
+	border-radius: 8px;
+	margin: 0 -8px;
+	padding-left: 8px;
+	padding-right: 8px;
+}
+
+.mobile-menu a:hover {
+	color: var(--accent);
+	background: var(--panel);
 }
 
 .mobile-menu a:last-child {
 	border-bottom: none
 }
 
-@media (max-width:900px) {
+/* Desktop navigation */
+@media (min-width: 1400px) {
+	.nav-links {
+		gap: 28px
+	}
+	
+	.nav-cta {
+		gap: 18px
+	}
+	
+	.brand-title {
+		font-size: 16px
+	}
+}
+
+@media (min-width: 1200px) and (max-width: 1399px) {
+	.nav-links {
+		gap: 24px
+	}
+	
+	.nav-cta {
+		gap: 16px
+	}
+}
+
+/* Tablet navigation */
+@media (max-width: 1199px) and (min-width: 901px) {
+	.nav-links {
+		gap: 16px
+	}
+	
+	.nav-links a {
+		font-size: 14px
+	}
+	
+	.brand-title {
+		font-size: 14px
+	}
+}
+
+/* Small tablet navigation */
+@media (max-width: 1024px) and (min-width: 769px) {
+	.nav-links {
+		gap: 14px
+	}
+	
+	.theme,
+	.lang {
+		scale: 0.95
+	}
+	
+	.container {
+		padding: 0 20px
+	}
+}
+
+/* Large mobile navigation */
+@media (max-width: 768px) {
 	.nav-links {
 		display: none
 	}
@@ -241,6 +315,97 @@ body {
 	.theme,
 	.lang {
 		scale: 0.9
+	}
+	
+	.nav-cta {
+		gap: 8px
+	}
+	
+	.brand-title {
+		font-size: 13px
+	}
+	
+	.container {
+		padding: 0 16px
+	}
+}
+
+/* Small mobile navigation */
+@media (max-width: 480px) {
+	.nav {
+		height: 60px
+	}
+	
+	.brand {
+		gap: 8px
+	}
+	
+	.brand-logo {
+		width: 32px;
+		height: 32px
+	}
+	
+	.brand-logo svg {
+		width: 18px;
+		height: 18px
+	}
+	
+	.brand-title {
+		font-size: 12px;
+		display: none /* Hide on very small screens */
+	}
+	
+	.theme,
+	.lang {
+		scale: 0.85;
+		padding: 3px
+	}
+	
+	.theme button,
+	.lang button {
+		padding: 4px 6px;
+		font-size: 11px;
+		min-width: 28px
+	}
+	
+	.burger {
+		width: 36px;
+		height: 36px;
+		font-size: 16px
+	}
+	
+	.nav-cta {
+		gap: 6px
+	}
+	
+	.container {
+		padding: 0 12px
+	}
+	
+	.mobile-menu {
+		padding: 16px 12px
+	}
+}
+
+/* Extra small screens */
+@media (max-width: 360px) {
+	.brand-title {
+		display: none
+	}
+	
+	.theme,
+	.lang {
+		scale: 0.8
+	}
+	
+	.burger {
+		width: 32px;
+		height: 32px;
+		font-size: 14px
+	}
+	
+	.container {
+		padding: 0 8px
 	}
 }
 

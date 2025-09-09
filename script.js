@@ -263,14 +263,45 @@ function applyTranslations(lang = currentLang) {
   currentLang = lang;
 }
 
-// Mobile burger
+// Mobile burger menu
 const burger = document.getElementById('burger');
 const mobileMenu = document.getElementById('mobileMenu');
 
 if (burger && mobileMenu) {
-  burger.addEventListener('click', () => {
+  burger.addEventListener('click', (e) => {
+    e.stopPropagation();
     const open = mobileMenu.classList.toggle('open');
     burger.setAttribute('aria-expanded', String(open));
+    burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    
+    // Prevent body scroll when menu is open
+    if (open) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+  });
+  
+  // Close mobile menu when clicking outside
+  document.addEventListener('click', (e) => {
+    if (mobileMenu.classList.contains('open') && 
+        !mobileMenu.contains(e.target) && 
+        !burger.contains(e.target)) {
+      mobileMenu.classList.remove('open');
+      burger.setAttribute('aria-expanded', 'false');
+      burger.setAttribute('aria-label', 'Open menu');
+      document.body.style.overflow = '';
+    }
+  });
+  
+  // Close mobile menu on window resize
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 768 && mobileMenu.classList.contains('open')) {
+      mobileMenu.classList.remove('open');
+      burger.setAttribute('aria-expanded', 'false');
+      burger.setAttribute('aria-label', 'Open menu');
+      document.body.style.overflow = '';
+    }
   });
 }
 
@@ -437,7 +468,18 @@ if (qrModal) {
 
 // Close modal on Escape key
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && qrModal.classList.contains('show')) {
-    hideQRModal();
+  if (e.key === 'Escape') {
+    // Close QR modal
+    if (qrModal && qrModal.classList.contains('show')) {
+      hideQRModal();
+    }
+    
+    // Close mobile menu
+    if (mobileMenu && mobileMenu.classList.contains('open')) {
+      mobileMenu.classList.remove('open');
+      burger.setAttribute('aria-expanded', 'false');
+      burger.setAttribute('aria-label', 'Open menu');
+      document.body.style.overflow = '';
+    }
   }
 });
