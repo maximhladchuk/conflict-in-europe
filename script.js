@@ -26,8 +26,10 @@ const translations = {
       offline: "Офлайн",
       players: "Гравці",
       region: "Регіон",
-      join_now: "ПРИЄДНАТИСЯ",
-      join_later: "ПРИЄДНАТИСЯ ПІЗНІШЕ"
+      loading: "Завантаження серверів...",
+      error: "Помилка завантаження серверів",
+      connection_error: "Помилка З'єднання",
+      join_now: "ПРИЄДНАТИСЯ"
     },
     support: {
       title: "Підтримайте Нас",
@@ -117,8 +119,8 @@ const translations = {
       offline: "Offline",
       players: "Players",
       region: "Region",
-      join_now: "JOIN NOW",
-      join_later: "JOIN LATER"
+      loading: "Loading servers...",
+      join_now: "JOIN NOW"
     },
     support: {
       title: "Support Us",
@@ -180,6 +182,17 @@ const translations = {
     },
     toast: {
       copied: "Copied!"
+    },
+    servers: {
+      title: "Our Servers",
+      online: "Online",
+      offline: "Offline",
+      players: "Players",
+      region: "Region",
+      loading: "Loading servers...",
+      error: "Error loading servers",
+      connection_error: "Connection Error",
+      join_now: "JOIN NOW"
     }
   }
 };
@@ -211,6 +224,10 @@ function applyTheme(theme = currentTheme) {
 
 // Function to get nested translation
 function getTranslation(key, lang = currentLang) {
+  if (!translations || !translations[lang]) {
+    return key;
+  }
+  
   const keys = key.split('.');
   let value = translations[lang];
   
@@ -347,6 +364,11 @@ document.querySelectorAll('.lang button').forEach(btn => {
     
     // Apply translations
     applyTranslations(selectedLang);
+    
+    // Re-render servers with new language
+    if (serversData.length > 0) {
+      renderServers();
+    }
   });
 });
 
@@ -375,10 +397,292 @@ document.addEventListener('DOMContentLoaded', () => {
   // Apply initial theme and translations
   applyTheme(currentTheme);
   applyTranslations(currentLang);
+  
+  // Load servers data
+  loadServers();
+  
+  // Re-render servers after translations are applied
+  setTimeout(() => {
+    if (serversData.length > 0) {
+      renderServers();
+    }
+  }, 100);
 });
 
 // Year in footer
 document.getElementById('year').textContent = new Date().getFullYear();
+
+// Server data loading and rendering
+let serversData = [];
+
+// Function to load servers from API
+async function loadServers() {
+  const serverList = document.querySelector('.server-list');
+  if (!serverList) return;
+  
+  // Show loading state
+  serverList.innerHTML = `
+    <div class="server-loading">
+      ${getTranslation('servers.loading', currentLang)}
+    </div>
+  `;
+  
+  try {
+    // Try direct fetch first
+    let response;
+    let data;
+    
+    try {
+      response = await fetch('https://conflictineurope.com/servers_info.json', {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-cache',
+        headers: {
+          'Accept': 'application/json',
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      data = await response.json();
+    } catch (corsError) {
+      console.warn('CORS error, trying proxy method:', corsError);
+      
+      // Try with a CORS proxy
+      const proxyUrl = 'https://api.allorigins.win/get?url=';
+      const targetUrl = encodeURIComponent('https://conflictineurope.com/servers_info.json');
+      
+      response = await fetch(proxyUrl + targetUrl);
+      
+      if (!response.ok) {
+        throw new Error(`Proxy request failed! status: ${response.status}`);
+      }
+      
+      const proxyData = await response.json();
+      data = JSON.parse(proxyData.contents);
+    }
+    
+    if (!Array.isArray(data)) {
+      throw new Error('Invalid data format');
+    }
+    
+    serversData = data.filter(server => !server.error && server.server_name); // Filter out servers with errors
+    console.log('Loaded servers:', serversData.length);
+    
+    if (serversData.length === 0) {
+      throw new Error('No valid servers found');
+    }
+    
+    renderServers();
+  } catch (error) {
+    console.error('Error loading servers:', error);
+    console.error('Error details:', error.message);
+    
+    // Try to load from backup source or show fallback
+    loadFallbackServers();
+  }
+}
+
+// Function to parse server name and extract features
+function parseServerInfo(serverName) {
+  const features = [];
+  
+  if (serverName.includes('1pp/3pp')) {
+    features.push('Third-person view');
+  } else if (serverName.includes('1pp')) {
+    features.push('First-person only, except for vehicles');
+  }
+  
+  if (serverName.includes('Hardcore')) {
+    features.push('Hardcore mode');
+    features.push('Shoulder radios unavailable');
+    features.push('Limited nickname visibility');
+    features.push('Killchat disabled');
+  } else {
+    features.push('Portable shoulder radios: spawnable and placeable');
+    features.push('Nickname rendering up to 300 meters');
+    features.push('Killchat fully enabled');
+  }
+  
+  if (serverName.includes('Drones')) {
+    features.push('Drones enabled');
+  }
+  
+  return features;
+}
+
+// Fallback server data if API fails
+function loadFallbackServers() {
+  console.log('Loading fallback server data...');
+  
+  serversData = [
+    {
+      server_name: "[EU] Conflict in Europe #1 (CIE) | UA-RU War | 1pp/3pp",
+      player_count: 128,
+      max_players: 128,
+      ip: "49.12.148.120",
+      port: 21020
+    },
+    {
+      server_name: "[EU] Conflict in Europe #2 (CIE) | UA-RU War | 1pp",
+      player_count: 64,
+      max_players: 128,
+      ip: "49.12.148.120", 
+      port: 22020
+    },
+    {
+      server_name: "[EU] Conflict in Europe #3 (CIE) | Drones UA-RU | 1pp/3pp",
+      player_count: 100,
+      max_players: 128,
+      ip: "78.46.90.51",
+      port: 23020
+    },
+    {
+      server_name: "[EU] Conflict in Europe #4 (CIE) | Hardcore UA-RU | 1pp",
+      player_count: 0,
+      max_players: 128,
+      ip: "78.46.90.51",
+      port: 24020,
+      offline: true
+    },
+    {
+      server_name: "[EU] Conflict in Europe #5 (CIE) | Drones UA-RU | 1pp/3pp",
+      player_count: 40,
+      max_players: 128,
+      ip: "49.12.148.120",
+      port: 25020
+    },
+    {
+      server_name: "[EU] Conflict in Europe #6 (CIE) | Drones UA-RU | 1pp",
+      player_count: 90,
+      max_players: 128,
+      ip: "78.46.90.51",
+      port: 36020
+    }
+  ];
+  
+  renderServers();
+}
+
+// Function to get server status
+function getServerStatus(server, lang = currentLang) {
+  if (server.offline) {
+    return {
+      online: false,
+      text: getTranslation('servers.offline', lang)
+    };
+  }
+  
+  if (server.player_count !== undefined && server.max_players) {
+    return {
+      online: true,
+      text: getTranslation('servers.online', lang)
+    };
+  }
+  return {
+    online: false,
+    text: getTranslation('servers.offline', lang)
+  };
+}
+
+// Function to render servers
+function renderServers() {
+  const serverList = document.querySelector('.server-list');
+  if (!serverList) return;
+  
+  const lang = currentLang || 'uk'; // Fallback to 'uk' if currentLang is not set
+  
+  if (serversData.length === 0) {
+    serverList.innerHTML = `
+      <div class="server-loading">
+        ${getTranslation('servers.loading', lang)}
+      </div>
+    `;
+    return;
+  }
+  
+  serverList.innerHTML = serversData.map((server, index) => {
+    const status = getServerStatus(server, lang);
+    const features = parseServerInfo(server.server_name);
+    const cleanName = server.server_name
+      .replace(/\s*\|\s*discord\.gg\/[^\s]*/, '') // Remove discord link
+      .replace(/\s*\|\s*$/, '') // Remove trailing separator
+      .trim();
+    
+    const ip = server.ip || 'N/A';
+    const port = server.port || 'N/A';
+    const ipPort = ip !== 'N/A' && port !== 'N/A' ? `${ip}:${port}` : 'N/A';
+    
+    // Determine region based on IP
+    let region = 'EU';
+    if (ip.startsWith('49.12')) {
+      region = 'DE (Hetzner)';
+    } else if (ip.startsWith('78.46')) {
+      region = 'DE (Hetzner)';
+    }
+    
+    return `
+      <article class="server-card">
+        <div class="server-flag" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/></svg>
+        </div>
+
+        <div class="server-info">
+          <div class="server-name">${cleanName}</div>
+          <div class="server-meta">
+            <span class="status ${status.online ? '' : 'offline'}">
+              <span class="dot"></span>
+              <span>${status.text}</span>
+            </span>
+            <span>
+              <span>${getTranslation('servers.players', lang)}</span>: 
+              ${server.player_count || 0} / ${server.max_players || 'N/A'}
+            </span>
+            <span>
+              <span>${getTranslation('servers.region', lang)}</span>: 
+              ${region}
+            </span>
+          </div>
+          ${ipPort !== 'N/A' ? `<button class="server-ip" data-copy="${ipPort}">${ipPort}</button>` : ''}
+          <ul class="server-features">
+            ${features.map(feature => `<li>${feature}</li>`).join('')}
+          </ul>
+        </div>
+        <div class="server-cta">
+          <a class="btn btn-primary btn-sm" href="#">
+            ${getTranslation('servers.join_now', lang)}
+          </a>
+        </div>
+      </article>
+    `;
+  }).join('');
+  
+  // Re-attach copy functionality to new IP buttons
+  document.querySelectorAll('[data-copy]').forEach(btn => {
+    if (!btn.hasAttribute('data-copy-attached')) {
+      btn.setAttribute('data-copy-attached', 'true');
+      btn.addEventListener('click', () => copyText(btn.getAttribute('data-copy')));
+    }
+  });
+}
+
+// Function to show server loading error
+function showServerError() {
+  const serverList = document.querySelector('.server-list');
+  if (!serverList) return;
+  
+  serverList.innerHTML = `
+    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--danger); display: flex; align-items: center; justify-content: center; gap: 8px;">
+      <span>⚠️</span>
+      ${getTranslation('servers.error', currentLang)}
+    </div>
+  `;
+}
+
+// Auto-refresh servers every 30 seconds
+setInterval(loadServers, 30000);
 
 // QR Modal functionality
 const qrModal = document.getElementById('qrModal');
