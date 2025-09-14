@@ -84,7 +84,7 @@ export const translations = {
       youtube: "YouTube"
     },
     footer: {
-      copyright: "Conflict in Europe — Неофіційна спільнота ARMA Reforger"
+      copyright: "Створено Командою розробки Conflict in Europe"
     },
     theme: {
       toggle: "Перемкнути тему"
@@ -177,7 +177,7 @@ export const translations = {
       youtube: "YouTube"
     },
     footer: {
-      copyright: "Conflict in Europe — Unofficial ARMA Reforger community"
+      copyright: "Created by the Conflict in Europe Development Team"
     },
     theme: {
       toggle: "Toggle theme"
