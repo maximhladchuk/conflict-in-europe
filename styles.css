@@ -1260,6 +1260,497 @@ details.rule[open] summary:before {
 	font-size: 14px;
 }
 
+/* Leaderboard */
+.leaderboard-controls {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-bottom: 24px;
+	gap: 20px;
+	position: relative;
+	min-height: 50px; /* Мінімальна висота для стабільності */
+}
+
+.server-tabs {
+	flex: 1;
+	display: flex;
+	justify-content: center;
+	max-width: 600px; /* Обмежуємо максимальну ширину */
+}
+
+.server-tabs-list {
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.refresh-button {
+	background: var(--card);
+	border: 2px solid var(--border);
+	border-radius: var(--radius-sm);
+	padding: 12px 16px;
+	color: var(--text);
+	cursor: pointer;
+	transition: all 0.3s ease;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-weight: 500;
+	white-space: nowrap;
+	position: absolute;
+	right: 0;
+	top: 50%;
+	margin-top: -25px; /* Половина висоти кнопки для центрування */
+}
+
+.refresh-button:hover {
+	background: var(--panel);
+	border-color: var(--accent);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.refresh-button:active {
+	transform: scale(0.95);
+}
+
+.refresh-button.loading {
+	opacity: 0.7;
+	cursor: not-allowed;
+}
+
+.refresh-button.loading .refresh-icon {
+	animation: spin 1s linear infinite;
+	transform-origin: center center;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 1.2em;
+	height: 1.2em;
+}
+
+@keyframes spin {
+	0% { 
+		transform: rotate(0deg);
+	}
+	100% { 
+		transform: rotate(360deg);
+	}
+}
+
+.refresh-icon {
+	width: 16px;
+	height: 16px;
+	border: 2px solid var(--text);
+	border-radius: 50%;
+	border-top-color: transparent;
+	display: inline-block;
+	position: relative;
+	transition: transform 0.3s ease;
+}
+
+.refresh-icon::before {
+	content: '';
+	position: absolute;
+	top: -2px;
+	left: -1px;
+	width: 0;
+	height: 0;
+	border-right: 4px solid var(--text);
+	border-top: 2px solid transparent;
+	border-bottom: 2px solid transparent;
+}
+
+.server-tab {
+	background: var(--card);
+	border: 2px solid var(--border);
+	border-radius: var(--radius-sm);
+	padding: 12px 20px;
+	color: var(--text);
+	cursor: pointer;
+	transition: all 0.3s ease;
+	font-weight: 500;
+	min-width: 80px;
+	text-align: center;
+	position: relative;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 2px;
+}
+
+.server-tab:hover {
+	background: var(--panel);
+	border-color: var(--accent);
+	transform: translateY(-2px);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.server-tab.active {
+	background: var(--accent);
+	border-color: var(--accent);
+	color: var(--background);
+	box-shadow: 0 4px 15px rgba(255, 200, 87, 0.3);
+}
+
+.server-tab.disabled {
+	background: var(--panel);
+	border-color: var(--border);
+	color: var(--muted);
+	cursor: not-allowed;
+	opacity: 0.5;
+	padding-bottom: 20px;
+}
+
+.server-tab.disabled::after {
+	content: attr(data-status);
+	position: absolute;
+	bottom: 4px;
+	left: 50%;
+	transform: translateX(-50%);
+	font-size: 0.65em;
+	opacity: 0.8;
+	color: var(--muted);
+	font-weight: 400;
+}
+
+.server-tab.loading {
+	position: relative;
+	pointer-events: none;
+	opacity: 0.7;
+}
+
+.server-tab.loading::before {
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 16px;
+	height: 16px;
+	border: 2px solid transparent;
+	border-top: 2px solid var(--accent);
+	border-radius: 50%;
+	animation: spin-center 1s linear infinite;
+	z-index: 1;
+}
+
+@keyframes spin-center {
+	0% { transform: translate(-50%, -50%) rotate(0deg); }
+	100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.server-tab .server-name {
+	font-size: 0.8em;
+	opacity: 0.8;
+}
+
+.server-tab .server-id {
+	font-size: 1.1em;
+	font-weight: bold;
+}
+
+.leaderboard-content {
+	max-width: 800px;
+	margin: 0 auto;
+}
+
+.leaderboard-data {
+	transition: opacity 0.2s ease;
+}
+
+.leaderboard-loading,
+.leaderboard-empty {
+	text-align: center;
+	padding: 60px 20px;
+	color: var(--muted);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.leaderboard-loading::before {
+	content: "";
+	width: 24px;
+	height: 24px;
+	border: 2px solid var(--border);
+	border-top: 2px solid var(--accent);
+	border-radius: 50%;
+	animation: spin 1s linear infinite;
+}
+
+.match-info {
+	background: var(--card);
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+	padding: 20px;
+	margin-bottom: 24px;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 16px;
+}
+
+.match-stat {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.stat-label {
+	font-size: 13px;
+	color: var(--muted);
+	font-weight: 500;
+}
+
+.stat-value {
+	font-size: 18px;
+	font-weight: 600;
+	color: var(--text);
+}
+
+.players-table {
+	background: var(--card);
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+	overflow: hidden;
+}
+
+.table-header {
+	background: var(--panel);
+	border-bottom: 1px solid var(--border);
+	display: grid;
+	grid-template-columns: 80px 1fr 80px 80px 80px;
+	padding: 16px 0;
+	font-weight: 600;
+	font-size: 14px;
+	color: var(--muted);
+}
+
+.table-header > div {
+	padding: 0 16px;
+	text-align: center;
+}
+
+.player-col {
+	text-align: left !important;
+}
+
+.table-row {
+	display: grid;
+	grid-template-columns: 80px 1fr 80px 80px 80px;
+	padding: 16px 0;
+	border-bottom: 1px solid var(--border);
+	transition: background-color 0.2s ease;
+}
+
+.table-row:last-child {
+	border-bottom: none;
+}
+
+.table-row:hover {
+	background: var(--panel);
+}
+
+.table-row > div {
+	padding: 0 16px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 14px;
+}
+
+.rank-col {
+	position: relative;
+	gap: 8px;
+}
+
+.rank-number {
+	font-weight: 600;
+}
+
+.rank-medal {
+	font-size: 16px;
+}
+
+.player-col {
+	justify-content: flex-start !important;
+}
+
+.player-name {
+	font-weight: 500;
+	color: var(--text);
+}
+
+.kills-col {
+	font-weight: 600;
+	color: var(--success);
+}
+
+.deaths-col {
+	font-weight: 600;
+	color: var(--danger);
+}
+
+.kd-col {
+	font-weight: 600;
+}
+
+/* Top 3 highlighting */
+.rank-1 {
+	background: linear-gradient(90deg, rgba(255, 215, 0, 0.1), transparent);
+	border-left: 3px solid #ffd700;
+}
+
+.rank-2 {
+	background: linear-gradient(90deg, rgba(192, 192, 192, 0.1), transparent);
+	border-left: 3px solid #c0c0c0;
+}
+
+.rank-3 {
+	background: linear-gradient(90deg, rgba(205, 127, 50, 0.1), transparent);
+	border-left: 3px solid #cd7f32;
+}
+
+@media (max-width: 900px) {
+	.leaderboard-controls {
+		flex-direction: column;
+		align-items: center;
+		gap: 16px;
+		position: static;
+	}
+	
+	.server-tabs {
+		width: 100%;
+		max-width: none;
+	}
+	
+	.refresh-button {
+		position: static;
+		top: auto;
+		margin-top: 0;
+		align-self: center;
+		min-width: 120px;
+	}
+	
+	.refresh-button:hover {
+		transform: translateY(-2px);
+	}
+	
+	.refresh-button:active {
+		transform: translateY(0);
+	}
+	
+	.server-tabs-list {
+		gap: 6px;
+	}
+	
+	.server-tab {
+		min-width: 60px;
+		padding: 10px 16px;
+		font-size: 0.9em;
+	}
+	
+	.server-tab .server-name {
+		font-size: 0.7em;
+	}
+	
+	.server-tab .server-id {
+		font-size: 1em;
+	}
+	
+	.match-info {
+		grid-template-columns: 1fr;
+		gap: 12px;
+		padding: 16px;
+	}
+	
+	.players-table {
+		font-size: 13px;
+	}
+	
+	.table-header,
+	.table-row {
+		grid-template-columns: 60px 1fr 60px 60px 70px;
+		padding: 12px 0;
+	}
+	
+	.table-header > div,
+	.table-row > div {
+		padding: 0 8px;
+	}
+	
+	.stat-value {
+		font-size: 16px;
+	}
+}
+
+@media (max-width: 600px) {
+	.leaderboard-controls {
+		gap: 12px;
+	}
+	
+	.refresh-button {
+		padding: 10px 12px;
+		font-size: 0.9em;
+		position: static;
+		top: auto;
+		margin-top: 0;
+	}
+	
+	.refresh-button:hover {
+		transform: translateY(-2px);
+	}
+	
+	.refresh-button:active {
+		transform: translateY(0);
+	}
+	
+	.refresh-text {
+		display: none;
+	}
+	
+	.server-tabs-list {
+		gap: 4px;
+	}
+	
+	.server-tab {
+		min-width: 50px;
+		padding: 8px 12px;
+		font-size: 0.8em;
+	}
+	
+	.server-tab .server-name {
+		font-size: 0.6em;
+	}
+	
+	.server-tab .server-id {
+		font-size: 0.9em;
+	}
+	
+	.match-info {
+		padding: 12px;
+	}
+	
+	.table-header,
+	.table-row {
+		grid-template-columns: 50px 1fr 50px 50px 60px;
+		padding: 10px 0;
+	}
+	
+	.table-header > div,
+	.table-row > div {
+		padding: 0 6px;
+		font-size: 12px;
+	}
+	
+	.rank-medal {
+		font-size: 14px;
+	}
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion:reduce) {
 	.btn {

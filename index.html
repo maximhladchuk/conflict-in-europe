@@ -22,6 +22,7 @@
 
         <nav class="nav-links" aria-label="Primary links">
           <a href="#servers" data-i18n="nav.servers">Servers</a>
+          <a href="#leaderboard" data-i18n="nav.leaderboard">Leaderboard</a>
           <a href="#support" data-i18n="nav.support">Support Us</a>
           <a href="#rules" data-i18n="nav.rules">Rules</a>
           <a href="#community" data-i18n="nav.community">Community</a>
@@ -41,6 +42,7 @@
       </div>
       <div id="mobileMenu" class="mobile-menu" role="navigation" aria-label="Mobile">
         <a href="#servers" data-i18n="nav.servers">Servers</a>
+        <a href="#leaderboard" data-i18n="nav.leaderboard">Leaderboard</a>
         <a href="#support" data-i18n="nav.support">Support Us</a>
         <a href="#rules" data-i18n="nav.rules">Rules</a>
         <a href="#community" data-i18n="nav.community">Community</a>
@@ -95,6 +97,64 @@
         </div>
       </div>
 
+    </section>
+
+    <section id="leaderboard" aria-labelledby="leaderboard-title">
+      <div class="container">
+        <h2 id="leaderboard-title" class="section-title" data-i18n="leaderboard.title">Top Players</h2>
+        
+        <div class="leaderboard-controls">
+          <div class="server-tabs">
+            <div class="server-tabs-list" role="tablist" aria-label="Server selection">
+              <!-- Server tabs will be generated dynamically -->
+            </div>
+          </div>
+          
+          <button class="refresh-button" id="refreshLeaderboard" aria-label="Refresh leaderboard data">
+            <span class="refresh-icon"></span>
+            <span class="refresh-text" data-i18n="leaderboard.refresh">Refresh</span>
+          </button>
+        </div>
+
+        <div class="leaderboard-content">
+          <div class="leaderboard-loading" style="display: none;">
+            <span data-i18n="leaderboard.loading">Loading leaderboard...</span>
+          </div>
+          
+          <div class="leaderboard-empty">
+            <p data-i18n="leaderboard.select_server_prompt">Please select a server to view top players</p>
+          </div>
+
+          <div class="leaderboard-data" style="display: none;">
+            <div class="match-info">
+              <div class="match-stat">
+                <span class="stat-label" data-i18n="leaderboard.duration">Duration:</span>
+                <span class="stat-value" id="match-duration">-</span>
+              </div>
+              <div class="match-stat">
+                <span class="stat-label" data-i18n="leaderboard.total_kills">Total Kills:</span>
+                <span class="stat-value" id="total-kills">-</span>
+              </div>
+              <div class="match-stat" id="winner-info" style="display: none;">
+                <span class="stat-label" data-i18n="leaderboard.winner">Winner:</span>
+                <span class="stat-value" id="match-winner">-</span>
+              </div>
+            </div>
+
+            <div class="players-table">
+              <div class="table-header">
+                <div class="rank-col" data-i18n="leaderboard.rank">Rank</div>
+                <div class="player-col" data-i18n="leaderboard.player">Player</div>
+                <div class="kills-col" data-i18n="leaderboard.kills">Kills</div>
+                <div class="deaths-col" data-i18n="leaderboard.deaths">Deaths</div>
+                <div class="kd-col" data-i18n="leaderboard.kd">K/D</div>
+              </div>
+              <div class="table-body" id="players-list">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section id="support" aria-labelledby="support-title">

@@ -3,6 +3,7 @@ export const translations = {
   uk: {
     nav: {
       servers: "Сервери",
+      leaderboard: "Рейтинг",
       support: "Підтримка",
       rules: "Правила",
       community: "Спільнота"
@@ -30,6 +31,27 @@ export const translations = {
       error: "Помилка завантаження серверів",
       connection_error: "Помилка З'єднання",
       join_now: "ПРИЄДНАТИСЯ"
+    },
+    leaderboard: {
+      title: "Найкращі Гравці",
+      select_server: "Оберіть сервер",
+      select_server_prompt: "Будь ласка, оберіть сервер для перегляду найкращих гравців",
+      loading: "Завантаження рейтингу...",
+      error: "Помилка завантаження рейтингу",
+      no_data: "Дані недоступні для цього сервера",
+      no_data_short: "Скоро",
+      loading_short: "Завантаження...",
+      refresh: "Оновити",
+      refreshing: "Оновлення...",
+      duration: "Тривалість",
+      total_kills: "Загальні вбивства",
+      winner: "Переможець",
+      rank: "Місце",
+      player: "Гравець",
+      kills: "Вбивства",
+      deaths: "Смерті",
+      kd: "К/С",
+      last_match: "Останній матч"
     },
     support: {
       title: "Підтримайте Нас",
@@ -96,6 +118,7 @@ export const translations = {
   en: {
     nav: {
       servers: "Servers",
+      leaderboard: "Leaderboard",
       support: "Support Us",
       rules: "Rules",
       community: "Community"
@@ -123,6 +146,27 @@ export const translations = {
       error: "Error loading servers",
       connection_error: "Connection Error",
       join_now: "JOIN NOW"
+    },
+    leaderboard: {
+      title: "Top Players",
+      select_server: "Select Server",
+      select_server_prompt: "Please select a server to view top players",
+      loading: "Loading leaderboard...",
+      error: "Error loading leaderboard",
+      no_data: "No data available for this server",
+      no_data_short: "Soon",
+      loading_short: "Loading...",
+      refresh: "Refresh",
+      refreshing: "Refreshing...",
+      duration: "Duration",
+      total_kills: "Total Kills",
+      winner: "Winner",
+      rank: "Rank",
+      player: "Player",
+      kills: "Kills",
+      deaths: "Deaths",
+      kd: "K/D",
+      last_match: "Last Match"
     },
     support: {
       title: "Support Us",

@@ -2,10 +2,12 @@
 import { getCurrentLang, applyTranslations, initLanguageSwitching } from './i18n.js';
 import { currentTheme, applyTheme, initThemeSwitching } from './theme.js';
 import { loadServers, renderServers, startServerRefresh, initMapModal } from './servers.js';
+import { initLeaderboard, updateServerList } from './leaderboard.js';
 import { initUI } from './ui.js';
 
-// Make renderServers globally available for i18n module
+// Make functions globally available for cross-module communication
 window.renderServers = renderServers;
+window.updateServerList = updateServerList;
 window.attachCopyFunctionality = () => {
   import('./ui.js').then(module => module.attachCopyFunctionality());
 };
@@ -33,6 +35,9 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Initialize map modal
   initMapModal();
+  
+  // Initialize leaderboard
+  initLeaderboard();
   
   // Initialize language and theme switching
   initLanguageSwitching();

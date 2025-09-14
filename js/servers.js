@@ -173,6 +173,11 @@ function renderServers() {
   if (window.attachCopyFunctionality) {
     window.attachCopyFunctionality();
   }
+  
+  // Update leaderboard server list
+  if (window.updateServerList && serversData.length > 0) {
+    window.updateServerList(serversData);
+  }
 }
 
 // Fallback server data if API fails
